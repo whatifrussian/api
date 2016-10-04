@@ -1,0 +1,26 @@
+{
+    "api_issue_cors": {
+        "origin": "https://chtoes.li",
+        "headers": "X-Requested-With, Content-Type"
+    },
+    "issue_template": {
+        "owner": "whatifrussian",
+        "repo": "website",
+        "title": "Typo on page {slug}",
+        "body": [
+            "Typo on https://chtoes.li/{slug}\n\n",
+            { "line_prefix": "> " },
+            "{before_far}**{before_near}|{sel}|{after_near}**{after_far}\n\n",
+            { "line_prefix": "" },
+            "Reader's comment:\n\n",
+            "{comment}"
+        ],
+        "labels": ["typo"],
+        "assignees": ["Totktonada"]
+    },
+    "github": {
+        "integration_id": 42,
+        "secret_key_file": "secret_key_file.pem",
+        "installation_id": 4242
+    }
+}
