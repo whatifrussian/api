@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 import requests
 import jwt
@@ -8,15 +9,15 @@ class GitHubAPI:
         def __init__(self, desc):
             super(InternalError, self).__init__(desc)
 
-    def __init__(self, config):
-        self.read_config(config)
-        self.read_secret_key()
+    def __init__(self, secret_key_file, base_dir=None, **kwargs):
         self.API_BASE = 'https://api.github.com'
-
-    def read_config(self, config):
-        self.integration_id = config['integration_id']
-        self.secret_key_file = config['secret_key_file']
-        self.installation_id = config['installation_id']
+        self.integration_id = kwargs['integration_id']
+        if base_dir:
+            self.secret_key_file = os.path.join(base_dir, secret_key_file)
+        else:
+            self.secret_key_file = secret_key_file
+        self.installation_id = kwargs['installation_id']
+        self.read_secret_key()
 
     def read_secret_key(self):
         with open(self.secret_key_file, 'r') as f:

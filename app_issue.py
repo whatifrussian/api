@@ -2,13 +2,13 @@ from traceback import format_exc
 from flask import Blueprint, request
 from flask import current_app as app
 from github import GitHubAPI
-from utils import get_config, dump_to_json
+from utils import get_base_dir, get_config, dump_to_json
 from app_log import log_request
 from crossdomain import crossdomain
 
 
 app_issue = Blueprint('issue', __name__)
-gitHub = GitHubAPI(get_config('github'))
+gitHub = GitHubAPI(**get_config('github'), base_dir=get_base_dir())
 api_issue_cors = get_config('api_issue_cors', {'origin', 'headers'})
 
 

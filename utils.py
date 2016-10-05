@@ -34,6 +34,10 @@ def dump_to_json(data, file=None):
         return json.dumps(data, **params)
 
 
+def get_base_dir():
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 def get_config(key=None, exp_keys=None):
     """Read and cache config file.
 
@@ -46,7 +50,7 @@ def get_config(key=None, exp_keys=None):
                 keys=str(set(keys)), exp_keys=str(set(exp_keys))))
 
     # get data if it isn't done already
-    config_file = 'config.json'
+    config_file = os.path.join(get_base_dir(), 'config.json')
     if not get_config.config_data:
         if not os.path.isfile(config_file):
             raise FileError('config file {file} is not a regular file'.format(

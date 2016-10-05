@@ -1,7 +1,8 @@
+import os
 import logging
 from flask import Blueprint, request
 from flask import current_app as app
-from utils import safe_mkdir, dump_to_json
+from utils import safe_mkdir, dump_to_json, get_base_dir
 
 
 app_log = Blueprint('log', __name__)
@@ -37,16 +38,17 @@ def name_default_logger(setup_state):
 
 @app_log.before_app_first_request
 def setup_loggers():
+    logdir = os.path.join(get_base_dir(), 'log')
+    safe_mkdir(logdir)
+
     def setup_file_logger(logger):
-        # TODO: cwd -> ??? (use dir from config?)
         short_name = logger.name[len(LOGGER_NAME_PREFIX):]
-        file = 'log/{name}.log'.format(name=short_name)
+        file = os.path.join(logdir, '{name}.log'.format(name=short_name))
         fileHandler = logging.FileHandler(file)
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
         fileHandler.setFormatter(formatter)
         logger.addHandler(fileHandler)
 
-    safe_mkdir('log')
     setup_file_logger(app.logger)
 
     # set logger class for future loggers
