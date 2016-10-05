@@ -8,7 +8,7 @@ from crossdomain import crossdomain
 
 
 app_issue = Blueprint('issue', __name__)
-gitHub = GitHubAPI(**get_config('github'), base_dir=get_base_dir())
+gitHub = GitHubAPI(base_dir=get_base_dir(), **get_config('github'))
 api_issue_cors = get_config('api_issue_cors', {'origin', 'headers'})
 
 
