@@ -21,7 +21,7 @@ def log_request(request, name):
         json = dump_to_json(request.get_json())
         logger.info('---- JSON ----\n' + json)
     else:
-        data = str(request.data)
+        data = request.get_data().decode()
         logger.info('---- Data ----\n' + data)
 
 
