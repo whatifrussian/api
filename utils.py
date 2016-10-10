@@ -57,7 +57,7 @@ def get_config(key=None, exp_keys=None):
                 file=config_file))
         with open(config_file, 'r') as f:
             data = json.load(f)
-        exp_keys_top = {'api_issue_cors', 'issue_template', 'github'}
+        exp_keys_top = {'issue_template', 'github'}
         validate_keys(data.keys(), exp_keys_top)
         get_config.config_data = data
     # check and return a part of the config if given, full config otherwise

@@ -1,8 +1,4 @@
 {
-    "api_issue_cors": {
-        "origin": "https://chtoes.li",
-        "headers": "X-Requested-With, Content-Type"
-    },
     "issue_template": {
         "owner": "whatifrussian",
         "repo": "website",

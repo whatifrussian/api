@@ -4,12 +4,10 @@ from flask import current_app as app
 from github import GitHubAPI
 from utils import get_base_dir, get_config, dump_to_json
 from app_log import log_request
-from crossdomain import crossdomain
 
 
 app_issue = Blueprint('issue', __name__)
 gitHub = GitHubAPI(base_dir=get_base_dir(), **get_config('github'))
-api_issue_cors = get_config('api_issue_cors', {'origin', 'headers'})
 
 
 # stub for receiving events
@@ -28,8 +26,7 @@ def is_issue_request_valid(request):
 
 # TODO: escape stars and other md in before*, sel, after*
 # TODO: secure as (origin || referer) && (X-Requested-With: XMLHttpRequest)
-@app_issue.route('/api/issue/', methods=['POST', 'OPTIONS'])
-@crossdomain(**api_issue_cors)
+@app_issue.route('/api/issue/', methods=['POST'])
 def api_issue():
     log_request(request, 'api-issue')
     # prepare constants
