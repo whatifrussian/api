@@ -6,9 +6,9 @@
         "body": [
             "Typo on https://chtoes.li/{slug}\n\n",
             { "line_prefix": "> " },
-            "{before_far}**{before_near}|{sel}|{after_near}**{after_far}\n\n",
+            "{before_far}**{before_near}|{sel}|{after_near}**{after_far}",
             { "line_prefix": "" },
-            "Reader's comment:\n\n",
+            "\n\nReader's comment:\n\n",
             "{comment}"
         ],
         "labels": ["typo"],

@@ -67,7 +67,9 @@ def api_issue():
         if isinstance(line, dict):
             line_prefix = line['line_prefix']
         else:
-            issue['body'] += line_prefix + line.format_map(user_data)
+            line = line.format_map(user_data)
+            line = ('\n' + line_prefix).join(line.split('\n'))
+            issue['body'] += line_prefix + line
     issue['body'] = issue['body'].rstrip('\n')
     # create issue
     try:
