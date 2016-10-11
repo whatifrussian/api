@@ -1,6 +1,6 @@
 ## Abstract
 
-The simple flask application implements an API for the <chtoes.li> website.
+The simple flask application implements an API for the chtoes.li website.
 
 ## Setup
 
