@@ -64,8 +64,6 @@ target/
 # Vim swap files
 .*.sw[a-z]
 
-# Keys
-*.pem
-
-# Private config
-config.json
+# Private config and keys
+shadow
+*.pem  # excessive but for avoid attention

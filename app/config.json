@@ -16,7 +16,7 @@
     },
     "github": {
         "integration_id": 42,
-        "secret_key_file": "secret_key_file.pem",
+        "secret_key_file": "shadow/secret_key_file.pem",
         "installation_id": 4242
     }
 }

@@ -35,7 +35,7 @@ def dump_to_json(data, file=None):
 
 
 def get_base_dir():
-    return os.path.dirname(os.path.abspath(__file__))
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def get_config(key=None, exp_keys=None):
@@ -49,14 +49,22 @@ def get_config(key=None, exp_keys=None):
             raise ValidateError('bad keys: {keys}, expected {exp_keys}'.format(
                 keys=str(set(keys)), exp_keys=str(set(exp_keys))))
 
-    # get data if it isn't done already
-    config_file = os.path.join(get_base_dir(), 'config.json')
-    if not get_config.config_data:
+    def read_config_file(config_file):
         if not os.path.isfile(config_file):
             raise FileError('config file {file} is not a regular file'.format(
                 file=config_file))
         with open(config_file, 'r') as f:
             data = json.load(f)
+        return data
+
+    # get data if it isn't done already
+    if not get_config.config_data:
+        base_dir = get_base_dir()
+        public_cfg = os.path.join(base_dir, 'app', 'config.json')
+        shadow_cfg = os.path.join(base_dir, 'shadow', 'config.json')
+        data = dict()
+        data.update(read_config_file(public_cfg))
+        data.update(read_config_file(shadow_cfg))
         exp_keys_top = {'issue_template', 'github'}
         validate_keys(data.keys(), exp_keys_top)
         get_config.config_data = data
