@@ -1,3 +1,4 @@
+import re
 from traceback import format_exc
 from flask import Blueprint, request
 from flask import current_app as app
@@ -8,6 +9,7 @@ from app_log import log_request
 
 app_issue = Blueprint('issue', __name__)
 gitHub = GitHubAPI(base_dir=get_base_dir(), **get_config('github'))
+escape_md_re = re.compile(r'([*_\\<>\[\]`])')
 
 
 # stub for receiving events
@@ -24,7 +26,17 @@ def is_issue_request_valid(request):
     return user_data and user_data.keys() ^ exp_keys == set()
 
 
-# TODO: escape stars and other md in before*, sel, after*
+def escape_sel_context(user_data):
+    res = dict()
+    exp_keys = {'before_far', 'before_near', 'sel', 'after_near', 'after_far'}
+    for k, v in user_data.items():
+        if k in exp_keys:
+            res[k] = escape_md_re.sub(r'\\\1', user_data[k])
+        else:
+            res[k] = user_data[k]
+    return res
+
+
 # TODO: secure as (origin || referer) && (X-Requested-With: XMLHttpRequest)
 @app_issue.route('/api/issue/', methods=['POST'])
 def api_issue():
@@ -41,6 +53,7 @@ def api_issue():
     if not is_issue_request_valid(request):
         return bad_request_response
     user_data = request.get_json()
+    user_data = escape_sel_context(user_data)
     # get template
     exp_keys = {'owner', 'repo', 'title', 'body', 'labels', 'assignees'}
     issue_tmpl = get_config('issue_template', exp_keys)
