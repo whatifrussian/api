@@ -20,10 +20,17 @@ def github_gate():
 
 
 def is_issue_request_valid(request):
+    ok = True
+    exp_headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json; charset=utf-8',
+    }
+    for k, v in exp_headers.items():
+        ok = ok and request.headers.get(k) == v
     exp_keys = {'comment', 'slug', 'before_far', 'before_near', 'sel',
                 'after_near', 'after_far'}
     user_data = request.get_json()
-    return user_data and user_data.keys() ^ exp_keys == set()
+    return ok and user_data and user_data.keys() ^ exp_keys == set()
 
 
 def escape_sel_context(user_data):
@@ -37,7 +44,6 @@ def escape_sel_context(user_data):
     return res
 
 
-# TODO: secure as (origin || referer) && (X-Requested-With: XMLHttpRequest)
 @app_issue.route('/api/issue/', methods=['POST'])
 def api_issue():
     log_request(request, 'api-issue')
