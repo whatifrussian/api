@@ -9,7 +9,7 @@ app_log = Blueprint('log', __name__)
 LOGGER_NAME_PREFIX = __name__ + '.'
 
 
-def log_request(request, name):
+def log_request(request, name, why=None):
     """ Log request with particular logger (to corresponding file) """
     logger = logging.getLogger(LOGGER_NAME_PREFIX + name)
     logger.info('=================')
@@ -23,6 +23,8 @@ def log_request(request, name):
     else:
         data = request.get_data().decode()
         logger.info('---- Data ----\n' + data)
+    if why:
+        logger.info('---- Why bad ----\n' + why)
 
 
 # Setup loggers

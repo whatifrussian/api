@@ -20,17 +20,32 @@ def github_gate():
 
 
 def is_issue_request_valid(request):
-    ok = True
     exp_headers = {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json; charset=utf-8',
+        'X-Requested-With': ('XMLHttpRequest',),
+        'Content-Type': (
+            'application/json; charset=utf-8',
+        ),
     }
-    for k, v in exp_headers.items():
-        ok = ok and request.headers.get(k) == v
+    for k, exp_v in exp_headers.items():
+        value = request.headers.get(k)
+        if value not in exp_v:
+            exp_v_str = '* "' + '"\n* "'.join(exp_v) + '"'
+            why = ('Header "{k}" is "{value}", ' +
+                   'expected one of the following:\n' +
+                   '{exp_v}').format(k=k, value=value, exp_v=exp_v_str)
+            return False, why
     exp_keys = {'comment', 'slug', 'before_far', 'before_near', 'sel',
                 'after_near', 'after_far'}
     user_data = request.get_json()
-    return ok and user_data and user_data.keys() ^ exp_keys == set()
+    if not user_data:
+        why = 'The request cannot be interpreted as JSON'
+        return False, why
+    keys = user_data.keys()
+    if keys ^ exp_keys != set():
+        why = 'Keys are {keys}, expected {exp_keys}'.format(
+            keys=keys, exp_keys=exp_keys)
+        return False, why
+    return True, None
 
 
 def escape_sel_context(user_data):
@@ -56,7 +71,9 @@ def api_issue():
     }
     bad_request_response = (dump_to_json(bad_payload), 400, headers)
     # get and validate user's data
-    if not is_issue_request_valid(request):
+    valid, why = is_issue_request_valid(request)
+    if not valid:
+        log_request(request, 'api-issue-errors', why)
         return bad_request_response
     user_data = request.get_json()
     user_data = escape_sel_context(user_data)
@@ -86,7 +103,8 @@ def api_issue():
             'url': url,
         }
     except:
-        app.logger.warning(
-            'The exception raised in api_issue:\n' + format_exc())
+        why = 'The exception raised in api_issue:\n' + format_exc()
+        app.logger.warning(why)
+        log_request(request, 'api-issue-errors', why)
         return bad_request_response
     return (dump_to_json(payload), 200, headers)
