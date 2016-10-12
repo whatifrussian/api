@@ -24,6 +24,7 @@ def is_issue_request_valid(request):
         'X-Requested-With': ('XMLHttpRequest',),
         'Content-Type': (
             'application/json; charset=utf-8',
+            'application/json; charset=UTF-8',
         ),
     }
     for k, exp_v in exp_headers.items():
